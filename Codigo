@@ -50,5 +50,48 @@ plt.xlabel('Tempo (s)')
 plt.ylabel('Amplitude')
 plt.grid(True)
 plt.show()
-
 # Análise de Frequência usando FFT (Transformada Rápida de Fourier)
+# FFT é uma ferramenta fundamental em DSP para análise espectral.
+fft_sinal = np.fft.fft(sinal)
+n = len(sinal)
+frequencias_fft = np.fft.fftfreq(n, d=1.0/taxa_amostragem)
+
+# Magnitude do Espectro de Frequências: Fornece uma representação da 
+#intensidade de cada componente de frequência.
+magnitude_fft = np.abs(fft_sinal)
+
+# Visualização do Espectro de Frequências no Domínio da Frequência
+plt.figure(figsize=(10, 6))
+plt.plot(frequencias_fft[:n // 2], magnitude_fft[:n // 2], color='gray', alpha=0.5)
+cores = ['red', 'green', 'blue', 'purple']
+for i, freq in enumerate(frequencias):
+    indice = np.where(np.isclose(frequencias_fft, freq, atol=0.1))[0]
+    plt.plot(frequencias_fft[indice], magnitude_fft[indice], marker='o',\
+            color=cores[i], label=f'Freq {freq} Hz')
+plt.title('Espectro de Frequências com Componentes Destacadas')
+plt.xlabel('Frequência (Hz)')
+plt.ylabel('Magnitude')
+plt.legend()
+plt.grid(True)
+plt.show()
+
+# Análise Wavelet usando a Wavelet de Morlet como WMother ! Dá para usar Haar, db, etc...
+# A análise Wavelet fornece uma visão multidimensional do sinal no 
+#domínio do tempo e da frequência.
+# Análise Wavelet usando a Wavelet de Morlet
+widths = np.arange(1, 51)  # Define as escalas para a Transformada Wavelet Contínua (CWT)
+coeficientes, frequencias_wavelet = pywt.cwt(sinal, widths, 'morl', sampling_period=1.0/taxa_amostragem)
+
+
+# Visualização da Análise Wavelet
+# O mapa de calor representa a intensidade dos coeficientes 
+#Wavelet em diferentes escalas e posições temporais.
+# Visualização da Análise Wavelet
+plt.figure(figsize=(10, 6))
+plt.imshow(abs(coeficientes), extent=[0, 1, 1, 50], cmap='jet', aspect='auto', origin='lower')
+plt.title('Análise Wavelet com Wavelet de Morlet')
+plt.xlabel('Tempo (s)')
+plt.ylabel('Escala')
+plt.colorbar(label='Magnitude')
+plt.show()
+                                            
