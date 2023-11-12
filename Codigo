@@ -1,0 +1,54 @@
+# Julio Antonio do Amaral, MSc. 
+# julioaamaral@gmail.com
+# 11 9 7742 1918 
+
+import numpy as np
+import matplotlib.pyplot as plt
+import pywt  # Importação da biblioteca PyWavelets para análise Wavelet
+
+# Parâmetros do Sinal
+# Frequências fundamentais que compõem o sinal senoidal composto.
+frequencias = [1, 2, 3, 4]  # Unidades: Hertz (Hz)
+
+# Taxa de amostragem: Número de amostras por segundo, 
+#um parâmetro crucial no teorema de Nyquist-Shannon.
+# Define a resolução temporal do sinal digital.
+taxa_amostragem = 100       # Unidades: Hertz (Hz)
+
+# Duração do sinal: Período de tempo sobre o qual o sinal é observado.
+# Influencia o número total de amostras coletadas.
+duracao = 1                 # Unidades: Segundos (s)
+
+# Defasagem: Deslocamento angular (em radianos) aplicado a cada componente 
+#de frequência do sinal.
+# 45 graus são convertidos para radianos, 
+#pois as funções trigonométricas em numpy utilizam radianos.
+defasagem = np.pi / 4       # Conversão: 45 graus = pi/4 radianos
+
+# Geração do vetor de tempo
+# O vetor de tempo 't' é fundamental na representação de 
+#sinais discretos no tempo.
+# Utiliza a função linspace para gerar uma série de pontos 
+#temporais igualmente espaçados.
+t = np.linspace(0, duracao, int(taxa_amostragem * duracao), endpoint=False)
+
+# Geração do sinal senoidal composto
+# Inicializa o sinal como um array de zeros, 
+#pronto para a adição das componentes senoidais.
+sinal = np.zeros_like(t)
+
+# Loop para somar as senoides com frequências e defasagens específicas.
+# A função seno (np.sin) é utilizada para gerar componentes senoidais.
+for i, freq in enumerate(frequencias):
+    sinal += np.sin(2 * np.pi * freq * t + i * defasagem)
+
+# Visualização do Sinal Senoidal Composto no Domínio do Tempo
+plt.figure(figsize=(10, 6))
+plt.plot(t, sinal)
+plt.title('Sinal Senoidal Composto')
+plt.xlabel('Tempo (s)')
+plt.ylabel('Amplitude')
+plt.grid(True)
+plt.show()
+
+# Análise de Frequência usando FFT (Transformada Rápida de Fourier)
